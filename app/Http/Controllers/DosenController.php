@@ -36,7 +36,8 @@ class DosenController extends Controller
         ])->validate();
         $dosen = new Dosen($validatedData);
         $dosen->save();
-        return redirect(route('dosenList'));
+        return redirect(route('dosenList'))
+        ->with('status', 'Dosen successfully added!');
     }
 
     /**
@@ -54,10 +55,10 @@ class DosenController extends Controller
     {
         $dosen = Dosen::find($nik);
         if ($dosen == null) {
-        return back()->withErrors(['err_msg' => 'Dosen not found!']);
+            return back()->withErrors(['err_msg' => 'Dosen not found!']);
         }
         return view('dosenEdit')
-        ->with('dosen', $dosen);
+            ->with('dosen', $dosen);
     }
 
     /**

@@ -26,7 +26,7 @@
 
         <div class="form-group">
           <label for="birthdate">Birth Date</label>
-          <input type="text" class="form-control" id="birthdate" placeholder="DD/MM/YYYY" required/>
+          <input type="date" class="form-control" id="birthdate" placeholder="DD/MM/YYYY" required/>
         </div>
 
         <div class="form-group">
@@ -53,5 +53,10 @@
 @endsection
 
 @section('ExtraJS')
+<script>
+    $("#dosen").DataTable({
+      pageLength: 25,
+    });
+</script>
 
 @endsection
