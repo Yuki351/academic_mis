@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
+use App\Models\Dosen;
 use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
@@ -12,7 +13,8 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        //
+        return view('mahasiswa.index')
+        -> with ('mahasiswas', Mahasiswa::all());
     }
 
     /**
@@ -20,7 +22,8 @@ class MahasiswaController extends Controller
      */
     public function create()
     {
-        //
+        return view('mahasiswa.create')
+        -> with('dosens', Dosen::all());
     }
 
     /**
@@ -28,7 +31,18 @@ class MahasiswaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = validator($request->all(), [
+            'nrp' => 'required|string|max:9|unique:mahasiswa, nrp',
+            'nama' => 'requred|string|max:100',
+            'email' => 'requred|string|email|max:50|unique:mahasiswa, email',
+            'birthdate' => 'requred|date',
+            'address' => 'requred|string|max:300',
+            'phone' => 'required|string|max:16', 
+            'dosen_nik' => 'required|string',
+        ])->validate();
+        $mahasiswa = new Mahasiswa($validatedData);
+        $mahasiswa->save();
+        return redirect(route('mahasiswaList'));
     }
 
     /**

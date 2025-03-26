@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dosen;
 use Illuminate\Http\Request;
+use Illuminate\validation\Rule;
 
 class DosenController extends Controller
 {
@@ -19,7 +20,7 @@ class DosenController extends Controller
      */
     public function create()
     {
-        //
+        return view('dosen.create');
     }
 
     /**
@@ -27,7 +28,15 @@ class DosenController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = validator($request->all(), [
+            'nik' => 'required|string|max:7|unique:dosen, nik',
+            'nama' => 'requred|string|max:100',
+            'email' => 'requred|string|email|max:50|unique:dosen, email',
+            'birthdate' => 'requred|date'
+        ])->validate();
+        $dosen = new Dosen($validatedData);
+        $dosen->save();
+        return redirect(route('dosenList'));
     }
 
     /**
@@ -43,7 +52,12 @@ class DosenController extends Controller
      */
     public function edit(Dosen $dosen)
     {
-        //
+        $dosen = Dosen::find($nik);
+        if ($dosen == null) {
+        return back()->withErrors(['err_msg' => 'Dosen not found!']);
+        }
+        return view('dosenEdit')
+        ->with('dosen', $dosen);
     }
 
     /**
@@ -51,7 +65,23 @@ class DosenController extends Controller
      */
     public function update(Request $request, Dosen $dosen)
     {
-        //
+        $dosen = Dosen::find($nik);
+        if ($dosen == null) {
+            return back()->withErrors(['err_msg' => 'Dosen not found!']);
+        }
+        $validatedData = validator($request->all(),[
+            'nik' => ['required', 'string', 'max:7', Rule::unique('dosen', 'nik')->ignore($dosen->nik, 'nik')],
+            'name' => ['required', 'string', 'max:100'],
+            'birthdate' => ['required'],
+            'email' => ['required', 'email', 'max:50', Rule::unique('dosen', 'email')->ignore($dosen->nik, 'nik')],
+        ])->validate();
+        $dosen['name'] = $validatedData['name'];
+        $dosen['birthdate'] = $validatedData['birthdate'];
+        $dosen['email'] = $validatedData['email'];
+
+        $dosen->save();
+        return redirect()->route('dosenList')
+            -> with('success', 'Dosen Berhasil Diubah');
     }
 
     /**
@@ -59,6 +89,7 @@ class DosenController extends Controller
      */
     public function destroy(Dosen $dosen)
     {
-        //
+        $dosen->delete();
+        return redirect(route('dosenList'))->with('success', 'Dosen Berhasil Dihapus');
     }
 }
