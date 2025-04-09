@@ -8,7 +8,7 @@
       class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
       <div>
         <h3 class="fw-bold mb-3">Manage Data Mahasiswa</h3>
-        <h6 class="op-7 mb-2">Free Bootstrap 5 Admin Halaman 2</h6>
+        <h6 class="op-7 mb-2"></h6>
       </div>
     </div>
       <div class="row">
@@ -30,6 +30,7 @@
                   <thead>
                     <tr>
                       <th>NRP</th>
+                      <th>Profile</th>
                       <th>Name</th>
                       <th>Address</th>
                       <th>Email</th>
@@ -40,7 +41,8 @@
                   </thead>
                   <tfoot>
                     <tr>
-                    <th>NRP</th>
+                      <th>NRP</th>
+                      <th>Profile</th>
                       <th>Name</th>
                       <th>Address</th>
                       <th>Email</th>
@@ -53,6 +55,7 @@
                     @foreach($mahasiswas as $mahasiswa)
                     <tr>
                       <td>{{ $mahasiswa->nrp }}</td>
+                      <td><img src="{{ asset('/storage/uploads/.$mhs->profilePicture) }}" width="50px" height="100px"></td>
                       <td>{{ $mahasiswa->name }}</td>
                       <td>{{ $mahasiswa->address }}</td>
                       <td>{{ $mahasiswa->email }}</td>
