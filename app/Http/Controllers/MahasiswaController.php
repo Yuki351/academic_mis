@@ -86,31 +86,36 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = Mahasiswa::find($nrp);
         if ($mahasiswa == null) {
-        return back()->withErrors(['err_msg' => 'mahasiswa not found!']);
+            return back()->withErrors(['err_msg' => 'mahasiswa not found!']);
         }
         $validatedData = $request->validate([
-        'nrp' => ['required', 'string', 'max:9', Rule::unique('mahasiswa', 'nrp')->ignore($mahasiswa->nrp, 'nrp')],
-        'name' => ['required', 'string', 'max:100'],
-        'birth_date' => ['required'],
-        'phone' => ['required', 'numeric'],
-        'email' => ['nullable', 'email', 'max:50', Rule::unique('mahasiswa', 'email')->ignore($mahasiswa->nrp, 'nrp')],
-        'address' => ['required', 'string', 'max:300'],
-        'dosen_nik' => ['required', 'string'],
-        'profilePicture' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
+            'nrp' => ['required', 'string', 'max:9', Rule::unique('mahasiswa', 'nrp')->ignore($mahasiswa->nrp, 'nrp')],
+            'name' => ['required', 'string', 'max:100'],
+            'birth_date' => ['required'],
+            'phone' => ['required', 'numeric'],
+            'email' => ['nullable', 'email', 'max:50', Rule::unique('mahasiswa', 'email')->ignore($mahasiswa->nrp, 'email')],
+            'address' => ['required', 'string', 'max:300'],
+            'dosen_nik' => ['required', 'string'],
+            'profilePicture' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ]);
+
         $mahasiswa['name'] = $validatedData['name'];
         $mahasiswa['birth_date'] = $validatedData['birth_date'];
         $mahasiswa['phone'] = $validatedData['phone'];
         $mahasiswa['email'] = $validatedData['email'];
         $mahasiswa['address'] = $validatedData['address'];
         $mahasiswa['dosen_nik'] = $validatedData['dosen_nik'];
+
         if ($request->hasFile('profilePicture')) {
-        unlink('storage/uploads/profilePicture' . $mahasiswa->profilePicture);
-        $file = $request->file('profilePicture');
-        $newFileName = $validatedData['nrp'] . '.' . $file->getClientOriginalExtension();
-        $file->storePubliclyAs('mahasiswas_picture', $newFileName);
-        $mahasiswa['profilePicture'] = $newFileName;
+            if ($mahasiswa->profilePicture != null) {
+                unlink('/storage/uploads/' . $mahasiswa->profilePicture);
+            }
+            $file = $request->file('profilePicture');
+            $newFileName = $validatedData['nrp'] . '.' . $file->getClientOriginalExtension();
+            $file->storePubliclyAs('uploads', $newFileName);
+            $mahasiswa['profilePicture'] = $newFileName;
         }
+
         $mahasiswa->save();
         return redirect()->route('mahasiswaList')
         ->with('status', 'mahasiswa successfully updated!');
@@ -126,7 +131,7 @@ class MahasiswaController extends Controller
           return back()->withErrors(['err_msg' => 'mahasiswa not found!']);
         }
         if ($mahasiswa->profilePicture != null) {
-          unlink('storage/uploads/profilePicture/' . $mahasiswa->profilePicture);
+          unlink('storage/uploads/' . $mahasiswa->profilePicture);
         }
         $mahasiswa->delete();
         return redirect()->route('mahasiswaList')

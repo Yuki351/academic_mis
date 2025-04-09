@@ -12,7 +12,7 @@
     </div>
 
     <div class="card-body">
-      <form method = "POST" action="{{ route('mahasiswaStore') }}" enctype="multipart/form-data">
+      <form method = "POST" action="{{ route('mahasiswaEdit') }}" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
           <label for="nrp">NRP</label>

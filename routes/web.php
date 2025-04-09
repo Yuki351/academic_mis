@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/mhs', [MahasiswaController::class, 'index']) ->name ('mahasiswaList');
         Route::get('/mhs/create', [MahasiswaController::class, 'create'])-> name('mahasiswaCreate');
         Route::post('/mhs/create', [MahasiswaController::class, 'store'])-> name('mahasiswaStore');
+        Route::post('/mhs/edit', [MahasiswaController::class, 'edit'])-> name('mahasiswaEdit');
         
     });
 });
